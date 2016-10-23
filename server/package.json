@@ -1,8 +1,8 @@
 {
-	"name": "language-server-example",
-	"description": "Example implementation of a language server in node.",
+	"name": "javac-linter-server",
+	"description": "Language server in node using exec javac",
 	"version": "0.0.1",
-	"author": "Microsoft Corporation",
+	"author": "faustinoaq",
 	"license": "MIT",
 	"engines": {
 		"node": "*"
@@ -11,7 +11,7 @@
 		"vscode-languageserver": "^2.2.0"
 	},
 	"devDependencies": {
-		"typescript": "^1.8.9"
+		"typescript": "^2.0.3"
 	},
 	"scripts": {
 		"compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",

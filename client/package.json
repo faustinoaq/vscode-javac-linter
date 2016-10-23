@@ -1,18 +1,18 @@
 {
-	"name": "language-client-example",
-	"description": "VSCode part of a language server",
-	"author": "Microsoft Corporation",
-	"license": "MIT",
+	"name": "javac-linter",
+	"displayName": "Java Linter",
+	"description": "Java Linter for VS Code",
 	"version": "0.0.1",
-	"publisher": "vscode",
+	"icon": "images/icon.png",
+	"publisher": "faustinoaq",
 	"engines": {
-		"vscode": "^1.4.0"
+		"vscode": "^1.5.0"
 	},
 	"categories": [
-		"Other"
+		"Linters"
 	],
 	"activationEvents": [
-		"onLanguage:plaintext"
+		"onLanguage:java"
 	],
 	"main": "./out/src/extension",
 	"contributes": {
@@ -20,9 +20,25 @@
 			"type": "object",
 			"title": "Example configuration",
 			"properties": {
-				"languageServerExample.maxNumberOfProblems": {
+				"javac-linter.enable": {
+					"type": "boolean",
+					"default": true,
+					"description": "true or false, enable/disable the java-linter"
+				},
+				"javac-linter.javac": {
+					"type": "string",
+					"description": "Location of Java compiler executable"
+				},
+				"javac-linter.classpath": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"description": "Location of Java compiler executable"
+				},
+				"javac-linter.maxNumberOfProblems": {
 					"type": "number",
-					"default": 100,
+					"default": 20,
 					"description": "Controls the maximum number of problems produced by the server."
 				}
 			}

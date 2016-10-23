@@ -8,8 +8,8 @@ import {
 	IPCMessageReader, IPCMessageWriter,
 	createConnection, IConnection, TextDocumentSyncKind,
 	TextDocuments, TextDocument, Diagnostic, DiagnosticSeverity,
-	InitializeParams, InitializeResult, TextDocumentPositionParams,
-	CompletionItem, CompletionItemKind
+	InitializeParams, InitializeResult, TextDocumentPositionParams
+	// CompletionItem, CompletionItemKind
 } from 'vscode-languageserver';
 
 // Create a connection for the server. The connection uses Node's IPC as a transport
@@ -30,72 +30,141 @@ connection.onInitialize((params): InitializeResult => {
 	return {
 		capabilities: {
 			// Tell the client that the server works in FULL text document sync mode
-			textDocumentSync: documents.syncKind,
+			textDocumentSync: documents.syncKind
 			// Tell the client that the server support code complete
-			completionProvider: {
-				resolveProvider: true
-			}
+			// completionProvider: {
+			// 	resolveProvider: true
+			// }
 		}
 	}
 });
 
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
-documents.onDidChangeContent((change) => {
-	validateTextDocument(change.document);
+documents.onDidOpen((change) => {
+	checkJavac.then(() => {
+		validateTextDocument(change.document);
+	}).catch((err) => {
+		console.log(err);
+	});
 });
 
 // The settings interface describe the server relevant settings part
 interface Settings {
-	languageServerExample: ExampleSettings;
+	javacLinter: ExtensionSettings;
 }
 
 // These are the example settings we defined in the client's package.json
 // file
-interface ExampleSettings {
+interface ExtensionSettings {
 	maxNumberOfProblems: number;
+	classpath: string[];
+	enable: boolean;
+	javac: string;
+}
+
+interface FileUri {
+	uri: string;
 }
 
 // hold the maxNumberOfProblems setting
 let maxNumberOfProblems: number;
+let classpath: string[];
+let enable: boolean;
+let javac: string;
 // The settings have changed. Is send on server activation
 // as well.
 connection.onDidChangeConfiguration((change) => {
 	let settings = <Settings>change.settings;
-	maxNumberOfProblems = settings.languageServerExample.maxNumberOfProblems || 100;
+	maxNumberOfProblems = settings["javac-linter"].maxNumberOfProblems || 20;
+	classpath = settings["javac-linter"].classpath;
+	if (classpath.length == 0) {
+		classpath = [workspaceRoot];
+	}
+	enable = settings["javac-linter"].enable;
+	javac = settings["javac-linter"].javac || 'javac';
 	// Revalidate any open text documents
 	documents.all().forEach(validateTextDocument);
 });
 
-function validateTextDocument(textDocument: TextDocument): void {
-	let diagnostics: Diagnostic[] = [];
-	let lines = textDocument.getText().split(/\r?\n/g);
-	let problems = 0;
-	for (var i = 0; i < lines.length && problems < maxNumberOfProblems; i++) {
-		let line = lines[i];
-		let index = line.indexOf('typescript');
-		if (index >= 0) {
-			problems++;
-			diagnostics.push({
-				severity: DiagnosticSeverity.Warning,
-				range: {
-					start: { line: i, character: index},
-					end: { line: i, character: index + 10 }
-				},
-				message: `${line.substr(index, 10)} should be spelled TypeScript`,
-				source: 'ex'
-			});
+let exec = require('child_process').exec;
+
+// First check if javac exist then validate sources
+var checkJavac = new Promise((resolve, reject) => {
+	exec('javac -version', (err, stderr, stdout) => {
+		if ((stdout.split(' ')[0] == 'javac') && enable) {
+			resolve();
+		} else {
+			reject("javac is not avaliable");
 		}
+	});
+});
+
+function convertUriToPath(uri: string) : string {
+	return uri.replace("file://", "");
+}
+
+function validateTextDocument(textDocument: FileUri): void {
+	let diagnostics: Diagnostic[] = [];
+	let exec = require('child_process').exec;
+	let os = require('os');
+	let cp = classpath.join(":");
+	if (os.platform() == 'win32') {
+		let cp = classpath.join(";");
 	}
-	// Send the computed diagnostics to VSCode.
-	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+	let cmd = `${javac} -Xlint:unchecked -d "${classpath[0]}" -cp "${cp}" ${convertUriToPath(textDocument.uri)}`
+	console.log(cmd);
+	exec(cmd, (err, stderr, stdout) => {
+		if (stdout) {
+			console.log(stdout);
+			let errors = stdout.split(convertUriToPath(textDocument.uri));
+			let lines = [], amountOfProblems = 0;
+			errors.forEach((element: String) => {
+				lines.push(element.split('\n'));
+			});
+			lines.forEach((element: String[]) => {
+				if (element.length > 2) {
+					amountOfProblems += 1;
+				}
+			});
+			amountOfProblems = Math.min(amountOfProblems, maxNumberOfProblems);
+			for (let index = 0; index <= amountOfProblems; index++) {
+				let element = lines[index];
+				if (element.length > 2) {
+					let firstLine  = element[0].split(':');
+					let line = parseInt(firstLine[1]) - 1;
+					let severity = firstLine[2].trim();
+					let message = firstLine[3].trim();
+					let column = element[2].length - 1;
+					diagnostics.push({
+						severity: severity == "error" ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+						range: {
+							start: { line: line, character: column },
+							end: { line: line, character: column }
+						},
+						message: message,
+						source: "Java Language"
+					});
+				}
+			}
+		}
+		// Send the computed diagnostics to VSCode.
+		connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+	});
 }
 
 connection.onDidChangeWatchedFiles((change) => {
-	// Monitored files have change in VSCode
-	connection.console.log('We recevied an file change event');
+	checkJavac.then(() => {
+		// Monitored files have change in VSCode
+		change.changes.forEach(validateTextDocument)
+	}).catch((err) => {
+		console.log(err);
+	});
 });
 
+/*
+
+TODO: completions
 
 // This handler provides the initial list of the completion items.
 connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
@@ -128,6 +197,7 @@ connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
 	}
 	return item;
 });
+*/
 
 /*
 connection.onDidOpenTextDocument((params) => {
