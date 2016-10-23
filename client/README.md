@@ -2,8 +2,7 @@
 
 ![Logo](https://raw.githubusercontent.com/faustinoaq/vscode-javac-linter/master/client/images/icon.png)
 
-A Java linter for Visual Studio Code using the
-[the language server protocol](https://code.visualstudio.com/blogs/2016/06/27/common-language-protocol).
+A Java linter for Visual Studio Code using the [the language server protocol](https://code.visualstudio.com/blogs/2016/06/27/common-language-protocol).
 
 ## Features
 
@@ -15,7 +14,7 @@ A Java linter for Visual Studio Code using the
 
 Java linter need `javac` and `-classpath`.
 
-By default the command is `javac -Xlint:unchecked -d ${classpath[0]} -cp ${classpath}`.
+By default the command is `${javac} -Xlint:unchecked -d "${classpath[0]}" -cp "${cp}" ${convertUriToPath(textDocument.uri)}`.
 
 [JDK](https://en.wikipedia.org/wiki/Java_Development_Kit) is required.
 
@@ -46,8 +45,7 @@ By example in `settings.json`:
 
 Lint "on-fly" is not supported.
 
-Take care when saving too quickly (`ctrl-s` the Java source),
-because each time when the document is saved, `javac` is executed. 
+Take care when saving too quickly (`ctrl-s` the Java source), because each time when the document is saved, `javac` is executed. 
 
 Also `.class` files are generated inside of the first classpath.
 
@@ -58,7 +56,7 @@ Also `.class` files are generated inside of the first classpath.
 
 ## Release Notes
 
-### 0.0.1
+### 0.0.1 (2016-10-23)
 
 Initial release of `javac-linter`
 

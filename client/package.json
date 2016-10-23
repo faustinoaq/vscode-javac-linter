@@ -5,9 +5,21 @@
 	"version": "0.0.1",
 	"icon": "images/icon.png",
 	"publisher": "faustinoaq",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/faustinoaq/vscode-javac-linter"
+	},
+	"bugs": "https://github.com/faustinoaq/vscode-javac-linter/issues",
 	"engines": {
 		"vscode": "^1.5.0"
 	},
+	"keywords": [
+		"java",
+		"lint",
+		"error",
+		"javac"
+	],
 	"categories": [
 		"Linters"
 	],
