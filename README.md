@@ -2,8 +2,7 @@
 
 ![Logo](https://raw.githubusercontent.com/faustinoaq/vscode-javac-linter/master/client/images/icon.png)
 
-A Java linter for Visual Studio Code using the
-[the language server protocol](https://code.visualstudio.com/blogs/2016/06/27/common-language-protocol).
+A Java linter for Visual Studio Code using the [the language server protocol](https://code.visualstudio.com/blogs/2016/06/27/common-language-protocol).
 
 ## Features
 
@@ -11,11 +10,13 @@ A Java linter for Visual Studio Code using the
 
 ![Example](https://raw.githubusercontent.com/faustinoaq/vscode-javac-linter/master/client/images/example.gif)
 
+> Tip: use `ctrl-k ctrl-h` to show `javac-linter`logs
+
 ## Requirements
 
 Java linter need `javac` and `-classpath`.
 
-By default the command is `javac -Xlint:unchecked -d ${classpath[0]} -cp ${classpath}`.
+By default the command is `javac -Xlint:unchecked -d "${classpath[0]}" -cp "${classpath}"`.
 
 [JDK](https://en.wikipedia.org/wiki/Java_Development_Kit) is required.
 
@@ -24,9 +25,9 @@ By default the command is `javac -Xlint:unchecked -d ${classpath[0]} -cp ${class
 This extension contributes the following settings:
 
 * `javac-linter.enable`: `true` or `false` (true by default)
-* `javac-linter.maxNumberOfProblems`: max number of source code problems
-* `javac-linter.javac`: Java compiler executable
-* `javac-linter.classpath`: project classpath array
+* `javac-linter.maxNumberOfProblems`: max number of source code problems (20 by default)
+* `javac-linter.javac`: Location of Java compiler executable (javac by default)
+* `javac-linter.classpath`: project classpath array ([workspace] by default)
 
 By example in `settings.json`:
 
@@ -46,19 +47,18 @@ By example in `settings.json`:
 
 Lint "on-fly" is not supported.
 
-Take care when saving too quickly (`ctrl-s` the Java source),
-because each time when the document is saved, `javac` is executed. 
+Take care when saving too quickly (`ctrl-s` the Java source), because each time when the document is saved, `javac` is executed. 
 
 Also `.class` files are generated inside of the first classpath.
 
 ## Roadmap
 
-- Allow full workspace linting (Maybe with performance issue)
+- Allow full workspace linting (Maybe with performance issues)
 - Allow suggested fix in case of a specific error/warning.
 
 ## Release Notes
 
-### 0.0.1
+### 1.0.0 (2016-10-23)
 
 Initial release of `javac-linter`
 
@@ -72,4 +72,4 @@ Initial release of `javac-linter`
 
 ## Contributors
 
-- [faustinoaq](https://github.com/faustinoaq) Faustino Aguilar - creator, maintainer
+- [@faustinoaq](https://github.com/faustinoaq) Faustino Aguilar - creator, maintainer
