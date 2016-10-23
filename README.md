@@ -15,7 +15,7 @@ A Java linter for Visual Studio Code using the
 
 Java linter need `javac` and `-classpath`.
 
-By default the command is `javac -Xlint:unchecked -cp ${classpath}`.
+By default the command is `javac -Xlint:unchecked -d ${classpath[0]} -cp ${classpath}`.
 
 [JDK](https://en.wikipedia.org/wiki/Java_Development_Kit) is required.
 
@@ -32,10 +32,10 @@ By example in `settings.json`:
 
 ```json
 {
-  javac-linter.enable: true,
-  javac-linter.maxNumberOfProblems: 20,
-  javac-linter.javac: "/usr/lib/jvm/default/bin/javac",
-  javac-linter.classpath: [
+  "javac-linter.enable": true,
+  "javac-linter.maxNumberOfProblems": 20,
+  "javac-linter.javac": "/usr/lib/jvm/default/bin/javac",
+  "javac-linter.classpath": [
     "/home/user/JavaProject/bin/classes",
     "/home/user"
   ]
