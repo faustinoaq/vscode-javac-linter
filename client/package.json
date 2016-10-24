@@ -2,7 +2,7 @@
 	"name": "javac-linter",
 	"displayName": "Java Linter",
 	"description": "Java Linter for VS Code",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"icon": "images/icon.png",
 	"publisher": "faustinoaq",
 	"license": "MIT",
