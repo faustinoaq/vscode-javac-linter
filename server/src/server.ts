@@ -106,7 +106,6 @@ function convertUriToPath(uri: string) : string {
 
 function validateTextDocument(textDocument: FileUri): void {
 	let diagnostics: Diagnostic[] = [];
-	let exec = require('child_process').exec;
 	let os = require('os');
 	let cp = classpath.join(":");
 	if (os.platform() == 'win32') {
@@ -139,6 +138,11 @@ function validateTextDocument(textDocument: FileUri): void {
 					let line = parseInt(firstLine[1]) - 1;
 					let severity = firstLine[2].trim();
 					let message = firstLine[3].trim();
+					if (element[3] != undefined && element[4] != undefined) {
+						// symbol and class location
+						message += '\n' + element[3].trim();
+						message += '\n' + element[4].trim();
+					}
 					let column = element[2].length - 1;
 					diagnostics.push({
 						severity: severity == "error" ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,

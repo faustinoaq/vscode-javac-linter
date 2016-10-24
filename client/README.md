@@ -34,7 +34,7 @@ By example in `settings.json`:
 ```json
 {
   "javac-linter.enable": true,
-  "javac-linter.maxNumberOfProblems": 20,
+  "javac-linter.maxNumberOfProblems": 100,
   "javac-linter.javac": "/usr/lib/jvm/default/bin/javac",
   "javac-linter.classpath": [
     "/home/user/JavaProject/bin/classes",
@@ -57,6 +57,11 @@ Also `.class` files are generated inside of the first classpath.
 - Allow suggested fix in case of a specific error/warning.
 
 ## Release Notes
+
+### 1.0.2 (2016-10-24)
+
+- Fix when destination dir doesn't exist
+- Add more info to diagnostics messages
 
 ### 1.0.0 (2016-10-23)
 
