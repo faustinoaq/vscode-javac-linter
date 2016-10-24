@@ -58,7 +58,7 @@ Also `.class` files are generated inside of the first classpath.
 
 ## Release Notes
 
-### 1.0.6 (2016-10-24)
+### 1.0.7 (2016-10-24)
 
 - Fix cross platform mistakes
 - Fix when destination dir doesn't exist

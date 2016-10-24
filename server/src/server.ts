@@ -94,29 +94,27 @@ function validateTextDocument(textDocument: FileUri): void {
 		if ((stdout.split(' ')[0] == 'javac') && enable) {
 			let diagnostics: Diagnostic[] = [];
 			let os = require('os');
+			let newline = '\n';
+			var cp = classpath.join(":");
+			var filepath = convertUriToPath(textDocument.uri);
 			if (os.platform() == 'win32') {
-				var cp = classpath.join(";");
-				var filepath = convertUriToPath(textDocument.uri)
-					.substr(1)
-					.replace('%3A', ':')
-					.replace('%20', ' ');
-			} else {
-				var cp = classpath.join(":");
-				var filepath = convertUriToPath(textDocument.uri); 
+				cp = classpath.join(";");
+				filepath = filepath.substr(1).replace('%3A', ':').replace('%20', ' ');
+				newline = '\r\n';
 			}
-			let cmd = `"${javac}" -Xlint:unchecked -d "${classpath[0]}" -cp "${cp}" "${filepath}"`
+			var cmd = "\"" + javac + "\" -Xlint:unchecked -d \"" + classpath[0] + "\" -cp \"" + cp + "\" \"" + filepath + "\"";
 			console.log(cmd);
 			exec(cmd, (err, stderr, stdout) => {
 				if (stdout) {
 					console.log(stdout);
 					if (stdout.split(':')[1].trim() == "directory not found") {
-						console.log("Fist classpath doesn't exist")
+						console.log("Fist classpath doesn't exist");
 						return 0;
 					}
 					let errors = stdout.split(convertUriToPath(textDocument.uri));
 					let lines = [], amountOfProblems = 0;
 					errors.forEach((element: String) => {
-						lines.push(element.split('\n'));
+						lines.push(element.split(newline));
 					});
 					lines.forEach((element: String[]) => {
 						if (element.length > 2) {
@@ -124,10 +122,13 @@ function validateTextDocument(textDocument: FileUri): void {
 						}
 					});
 					amountOfProblems = Math.min(amountOfProblems, maxNumberOfProblems);
-					for (let index = 0; index <= amountOfProblems; index++) {
+					for (let index = 0; index < amountOfProblems; index++) {
 						let element = lines[index];
 						if (element.length > 2) {
 							let firstLine  = element[0].split(':');
+							if (os.platform() == 'win32') {
+								firstLine = element[0].substr(2).split(':');
+							}
 							let line = parseInt(firstLine[1]) - 1;
 							let severity = firstLine[2].trim();
 							let message = firstLine[3].trim();
