@@ -117,6 +117,10 @@ function validateTextDocument(textDocument: FileUri): void {
 	exec(cmd, (err, stderr, stdout) => {
 		if (stdout) {
 			console.log(stdout);
+			if (stdout.split(':')[1].trim() == "directory not found") {
+				console.log("Fist classpath doesn't exist")
+				return 0;
+			}
 			let errors = stdout.split(convertUriToPath(textDocument.uri));
 			let lines = [], amountOfProblems = 0;
 			errors.forEach((element: String) => {

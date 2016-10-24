@@ -2,7 +2,7 @@
 	"name": "javac-linter",
 	"displayName": "Java Linter",
 	"description": "Java Linter for VS Code",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"icon": "images/icon.png",
 	"publisher": "faustinoaq",
 	"license": "MIT",
@@ -46,7 +46,7 @@
 					"items": {
 						"type": "string"
 					},
-					"description": "Location of Java compiler executable"
+					"description": "Location of Java classpath"
 				},
 				"javac-linter.maxNumberOfProblems": {
 					"type": "number",
