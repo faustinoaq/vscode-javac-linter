@@ -1,7 +1,7 @@
 {
 	"name": "javac-linter-server",
 	"description": "Language server in node using exec javac",
-	"version": "1.0.6",
+	"version": "1.0.9",
 	"author": "faustinoaq",
 	"license": "MIT",
 	"engines": {

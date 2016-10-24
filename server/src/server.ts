@@ -90,7 +90,7 @@ function convertUriToPath(uri: string) : string {
 function validateTextDocument(textDocument: FileUri): void {
 	let exec = require('child_process').exec;
 	// First check if javac exist then validate sources
-	exec("\"" + javac "\" -version", (err, stderr, stdout) => {
+	exec("\"" + javac + "\" -version", (err, stderr, stdout) => {
 		if ((stdout.split(' ')[0] == 'javac') && enable) {
 			let diagnostics: Diagnostic[] = [];
 			let os = require('os');
