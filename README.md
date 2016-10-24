@@ -58,8 +58,9 @@ Also `.class` files are generated inside of the first classpath.
 
 ## Release Notes
 
-### 1.0.2 (2016-10-24)
+### 1.0.3 (2016-10-24)
 
+- Fix for Windows® when javac is not available on %PATH%
 - Fix when destination dir doesn't exist
 - Add more info to diagnostics messages
 

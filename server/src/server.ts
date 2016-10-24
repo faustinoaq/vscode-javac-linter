@@ -42,11 +42,7 @@ connection.onInitialize((params): InitializeResult => {
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidOpen((change) => {
-	checkJavac.then(() => {
-		validateTextDocument(change.document);
-	}).catch((err) => {
-		console.log(err);
-	});
+	validateTextDocument(change.document);
 });
 
 // The settings interface describe the server relevant settings part
@@ -87,87 +83,78 @@ connection.onDidChangeConfiguration((change) => {
 	documents.all().forEach(validateTextDocument);
 });
 
-let exec = require('child_process').exec;
-
-// First check if javac exist then validate sources
-var checkJavac = new Promise((resolve, reject) => {
-	exec('javac -version', (err, stderr, stdout) => {
-		if ((stdout.split(' ')[0] == 'javac') && enable) {
-			resolve();
-		} else {
-			reject("javac is not avaliable");
-		}
-	});
-});
-
 function convertUriToPath(uri: string) : string {
 	return uri.replace("file://", "");
 }
 
 function validateTextDocument(textDocument: FileUri): void {
-	let diagnostics: Diagnostic[] = [];
-	let os = require('os');
-	let cp = classpath.join(":");
-	if (os.platform() == 'win32') {
-		let cp = classpath.join(";");
-	}
-	let cmd = `${javac} -Xlint:unchecked -d "${classpath[0]}" -cp "${cp}" ${convertUriToPath(textDocument.uri)}`
-	console.log(cmd);
-	exec(cmd, (err, stderr, stdout) => {
-		if (stdout) {
-			console.log(stdout);
-			if (stdout.split(':')[1].trim() == "directory not found") {
-				console.log("Fist classpath doesn't exist")
-				return 0;
+	let exec = require('child_process').exec;
+	// First check if javac exist then validate sources
+	exec(`${javac} -version`, (err, stderr, stdout) => {
+		if ((stdout.split(' ')[0] == 'javac') && enable) {
+			let diagnostics: Diagnostic[] = [];
+			let os = require('os');
+			let cp = classpath.join(":");
+			if (os.platform() == 'win32') {
+				let cp = classpath.join(";");
 			}
-			let errors = stdout.split(convertUriToPath(textDocument.uri));
-			let lines = [], amountOfProblems = 0;
-			errors.forEach((element: String) => {
-				lines.push(element.split('\n'));
-			});
-			lines.forEach((element: String[]) => {
-				if (element.length > 2) {
-					amountOfProblems += 1;
-				}
-			});
-			amountOfProblems = Math.min(amountOfProblems, maxNumberOfProblems);
-			for (let index = 0; index <= amountOfProblems; index++) {
-				let element = lines[index];
-				if (element.length > 2) {
-					let firstLine  = element[0].split(':');
-					let line = parseInt(firstLine[1]) - 1;
-					let severity = firstLine[2].trim();
-					let message = firstLine[3].trim();
-					if (element[3] != undefined && element[4] != undefined) {
-						// symbol and class location
-						message += '\n' + element[3].trim();
-						message += '\n' + element[4].trim();
+			let cmd = `${javac} -Xlint:unchecked -d "${classpath[0]}" -cp "${cp}" ${convertUriToPath(textDocument.uri)}`
+			console.log(cmd);
+			exec(cmd, (err, stderr, stdout) => {
+				if (stdout) {
+					console.log(stdout);
+					if (stdout.split(':')[1].trim() == "directory not found") {
+						console.log("Fist classpath doesn't exist")
+						return 0;
 					}
-					let column = element[2].length - 1;
-					diagnostics.push({
-						severity: severity == "error" ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-						range: {
-							start: { line: line, character: column },
-							end: { line: line, character: column }
-						},
-						message: message,
-						source: "Java Language"
+					let errors = stdout.split(convertUriToPath(textDocument.uri));
+					let lines = [], amountOfProblems = 0;
+					errors.forEach((element: String) => {
+						lines.push(element.split('\n'));
 					});
+					lines.forEach((element: String[]) => {
+						if (element.length > 2) {
+							amountOfProblems += 1;
+						}
+					});
+					amountOfProblems = Math.min(amountOfProblems, maxNumberOfProblems);
+					for (let index = 0; index <= amountOfProblems; index++) {
+						let element = lines[index];
+						if (element.length > 2) {
+							let firstLine  = element[0].split(':');
+							let line = parseInt(firstLine[1]) - 1;
+							let severity = firstLine[2].trim();
+							let message = firstLine[3].trim();
+							if (element[3] != undefined && element[4] != undefined) {
+								// symbol and class location
+								message += '\n' + element[3].trim();
+								message += '\n' + element[4].trim();
+							}
+							let column = element[2].length - 1;
+							diagnostics.push({
+								severity: severity == "error" ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+								range: {
+									start: { line: line, character: column },
+									end: { line: line, character: column }
+								},
+								message: message,
+								source: "Java Language"
+							});
+						}
+					}
 				}
-			}
+				// Send the computed diagnostics to VSCode.
+				connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+			});
+		} else {
+			console.log("javac is not avaliable, check javac-linter.javac on settings.json");
 		}
-		// Send the computed diagnostics to VSCode.
-		connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 	});
 }
 
 connection.onDidChangeWatchedFiles((change) => {
-	checkJavac.then(() => {
-		// Monitored files have change in VSCode
-		change.changes.forEach(validateTextDocument)
-	}).catch((err) => {
-		console.log(err);
-	});
+	// Monitored files have change in VSCode
+	change.changes.forEach(validateTextDocument)
 });
 
 /*

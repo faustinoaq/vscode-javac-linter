@@ -12,15 +12,6 @@ import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, T
 
 export function activate(context: ExtensionContext) {
 
-	// Check if javac exist
-	let exec = require("child_process").exec;
-	exec("javac -version", (err, stderr, stdout) => {
-		if (stdout.split(' ')[0] != "javac") {
-			let message = "javac is not avaliable, check javac.path in settings.json";
-			vscode.window.showWarningMessage(message);
-		}
-	});
-
 	// The server is implemented in node
 	let serverModule = context.asAbsolutePath(path.join('server', 'server.js'));
 	// The debug options for the server
