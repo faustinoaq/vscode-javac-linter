@@ -95,10 +95,13 @@ function validateTextDocument(textDocument: FileUri): void {
 			let diagnostics: Diagnostic[] = [];
 			let os = require('os');
 			let cp = classpath.join(":");
+			let filepath = convertUriToPath(textDocument.uri); 
 			if (os.platform() == 'win32') {
-				let cp = classpath.join(";");
+				cp = classpath.join(";");
+				filepath = filepath.substr(1);
+				filepath = filepath.replace('%3A', ':');
 			}
-			let cmd = `${javac} -Xlint:unchecked -d "${classpath[0]}" -cp "${cp}" ${convertUriToPath(textDocument.uri)}`
+			let cmd = `"${javac}" -Xlint:unchecked -d "${classpath[0]}" -cp "${cp}" "${filepath}"`
 			console.log(cmd);
 			exec(cmd, (err, stderr, stdout) => {
 				if (stdout) {
