@@ -94,11 +94,15 @@ function validateTextDocument(textDocument: FileUri): void {
 		if ((stdout.split(' ')[0] == 'javac') && enable) {
 			let diagnostics: Diagnostic[] = [];
 			let os = require('os');
-			var cp = classpath.join(":");
-			var filepath = convertUriToPath(textDocument.uri); 
 			if (os.platform() == 'win32') {
-				cp = classpath.join(";");
-				filepath = filepath.substr(1).replace('%3A', ':').replace('%20', ' ');
+				var cp = classpath.join(";");
+				var filepath = convertUriToPath(textDocument.uri)
+					.substr(1)
+					.replace('%3A', ':')
+					.replace('%20', ' ');
+			} else {
+				var cp = classpath.join(":");
+				var filepath = convertUriToPath(textDocument.uri); 
 			}
 			let cmd = `"${javac}" -Xlint:unchecked -d "${classpath[0]}" -cp "${cp}" "${filepath}"`
 			console.log(cmd);
