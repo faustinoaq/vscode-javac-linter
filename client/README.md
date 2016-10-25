@@ -52,6 +52,10 @@ Also `.class` files are generated inside of the first classpath.
 
 ## Release Notes
 
+### 1.1.3 (2016-10-25)
+
+- Add `-g` to `javac` args to allow debugging with the [Java Debugger](https://github.com/DonJayamanne/javaVSCode)
+
 ### 1.1.1 (2016-10-24)
 
 - Fix error in diff views (stop when inmemory path is found)

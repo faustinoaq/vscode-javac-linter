@@ -100,7 +100,7 @@ function validateTextDocument(textDocument: FileUri): void {
 				cp = classpath.join(";");
 				filepath = filepath.substr(1).replace(/%3A/g, ':').replace(/%20/g, ' ').replace(/\//g, '\\');
 			}
-			var cmd = `"${javac}" -Xlint:unchecked -d "${classpath[0]}" -cp "${cp}" "${filepath}"`;
+			var cmd = `"${javac}" -Xlint:unchecked -g -d "${classpath[0]}" -cp "${cp}" "${filepath}"`;
 			console.log(cmd);
 			exec(cmd, (err, stderr, stdout) => {
 				if (stdout) {
@@ -110,7 +110,7 @@ function validateTextDocument(textDocument: FileUri): void {
 						console.log("Fist classpath doesn't exist");
 						return 0;
 					} else if (firstMsg == "invalid flag") {
-						console.log("Linting inmemory is not supported");
+						console.log("Error when linting with invalid flag");
 						return 1;
 					}
 					let errors = stdout.split(filepath);
