@@ -54,6 +54,10 @@ Also `.class` files are generated inside of the first classpath.
 
 ## Release Notes
 
+### 1.1.1 (2016-10-24)
+
+- Fix error in diff views (stop when inmemory path is found)
+
 ### 1.1.0 (2016-10-24)
 
 - Fix many bugs :-) *10 versions in one day*

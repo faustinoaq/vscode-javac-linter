@@ -105,9 +105,13 @@ function validateTextDocument(textDocument: FileUri): void {
 			exec(cmd, (err, stderr, stdout) => {
 				if (stdout) {
 					console.log(stdout);
-					if (stdout.split(':')[1].trim() == "directory not found") {
+					let firstMsg = stdout.split(':')[1].trim();
+					if (firstMsg == "directory not found") {
 						console.log("Fist classpath doesn't exist");
-						return 0;
+						return 1;
+					} else if (firstMsg == "invalid flag") {
+						console.log("Linting inmemory is not supported");
+						return 2;
 					}
 					let errors = stdout.split(filepath);
 					var lines = [];
