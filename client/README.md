@@ -12,10 +12,6 @@ A Java linter for Visual Studio Code using the [the language server protocol](ht
 
 ## Requirements
 
-Java linter need `javac` and `-classpath`.
-
-By default the command is `javac -Xlint:unchecked -d "${classpath[0]}" -cp "${classpath}"`.
-
 [JDK](https://en.wikipedia.org/wiki/Java_Development_Kit) is required.
 
 ## Settings 
@@ -25,7 +21,7 @@ This extension contributes the following settings:
 * `javac-linter.enable`: `true` or `false` (true by default)
 * `javac-linter.maxNumberOfProblems`: max number of source code problems (20 by default)
 * `javac-linter.javac`: Location of Java compiler executable (javac by default)
-* `javac-linter.classpath`: project classpath array ([workspace] by default)
+* `javac-linter.classpath`: project classpath array ([workspaceRoot] by default)
 
 By example in `settings.json`:
 
@@ -36,7 +32,7 @@ By example in `settings.json`:
   "javac-linter.javac": "/usr/lib/jvm/default/bin/javac",
   "javac-linter.classpath": [
     "/home/user/JavaProject/bin/classes",
-    "/home/user"
+    "/home/user/JavaLibs/classes"
   ]
 }
 ```
@@ -56,16 +52,13 @@ Also `.class` files are generated inside of the first classpath.
 
 ## Release Notes
 
-### 1.0.9 (2016-10-24)
+### 1.1.0 (2016-10-24)
 
-- Fix when path with spaces
-- Fix cross platform mistakes
-- Fix when destination dir doesn't exist
-- Add more info to diagnostics messages
+- Fix many bugs :-) *10 versions in one day*
 
 ### 1.0.0 (2016-10-23)
 
-Initial release of `javac-linter`
+- Initial release of `javac-linter`
 
 ## Contributing
 

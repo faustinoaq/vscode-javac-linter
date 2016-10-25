@@ -90,19 +90,17 @@ function convertUriToPath(uri: string) : string {
 function validateTextDocument(textDocument: FileUri): void {
 	let exec = require('child_process').exec;
 	// First check if javac exist then validate sources
-	exec("\"" + javac + "\" -version", (err, stderr, stdout) => {
+	exec(`"${javac}" -version`, (err, stderr, stdout) => {
 		if ((stdout.split(' ')[0] == 'javac') && enable) {
 			let diagnostics: Diagnostic[] = [];
 			let os = require('os');
-			let newline = '\n';
 			var cp = classpath.join(":");
 			var filepath = convertUriToPath(textDocument.uri);
 			if (os.platform() == 'win32') {
 				cp = classpath.join(";");
-				filepath = filepath.substr(1).replace('%3A', ':').replace('%20', ' ');
-				newline = '\r\n';
+				filepath = filepath.substr(1).replace(/%3A/g, ':').replace(/%20/g, ' ').replace(/\//g, '\\');
 			}
-			var cmd = "\"" + javac + "\" -Xlint:unchecked -d \"" + classpath[0] + "\" -cp \"" + cp + "\" \"" + filepath + "\"";
+			var cmd = `"${javac}" -Xlint:unchecked -d "${classpath[0]}" -cp "${cp}" "${filepath}"`;
 			console.log(cmd);
 			exec(cmd, (err, stderr, stdout) => {
 				if (stdout) {
@@ -111,33 +109,23 @@ function validateTextDocument(textDocument: FileUri): void {
 						console.log("Fist classpath doesn't exist");
 						return 0;
 					}
-					let errors = stdout.split(convertUriToPath(textDocument.uri));
-					let lines = [], amountOfProblems = 0;
+					let errors = stdout.split(filepath);
+					var lines = [];
+					var problemsCount = 0; 
 					errors.forEach((element: String) => {
-						lines.push(element.split(newline));
+						lines.push(element.split('\n'));
 					});
-					lines.forEach((element: String[]) => {
+					lines.every((element) => {
 						if (element.length > 2) {
-							amountOfProblems += 1;
-						}
-					});
-					amountOfProblems = Math.min(amountOfProblems, maxNumberOfProblems);
-					for (let index = 0; index < amountOfProblems; index++) {
-						let element = lines[index];
-						if (element.length > 2) {
-							let firstLine  = element[0].split(':');
-							if (os.platform() == 'win32') {
-								firstLine = element[0].substr(2).split(':');
+							problemsCount++;
+							if (problemsCount > maxNumberOfProblems) {
+								return false;
 							}
+							let firstLine = element[0].split(':');
 							let line = parseInt(firstLine[1]) - 1;
 							let severity = firstLine[2].trim();
-							let message = firstLine[3].trim();
-							if (element[3] != undefined && element[4] != undefined) {
-								// symbol and class location
-								message += '\n' + element[3].trim();
-								message += '\n' + element[4].trim();
-							}
 							let column = element[2].length - 1;
+							let message = firstLine[3].trim();
 							diagnostics.push({
 								severity: severity == "error" ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
 								range: {
@@ -145,16 +133,17 @@ function validateTextDocument(textDocument: FileUri): void {
 									end: { line: line, character: column }
 								},
 								message: message,
-								source: "Java Language"
+								source: 'javac'
 							});
 						}
-					}
+						return true;
+					});
 				}
 				// Send the computed diagnostics to VSCode.
 				connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 			});
 		} else {
-			console.log("javac is not avaliable, check javac-linter.javac on settings.json");
+			console.log("javac is not avaliable, check javac-linter on settings.json");
 		}
 	});
 }
