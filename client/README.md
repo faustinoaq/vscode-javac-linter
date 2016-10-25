@@ -52,6 +52,10 @@ Also `.class` files are generated inside of the first classpath.
 
 ## Release Notes
 
+### 1.1.5 (2016-10-25)
+
+- Add `decodeURI` to allow path with spaces and special characters
+
 ### 1.1.3 (2016-10-25)
 
 - Add `-g` to `javac` args to allow debugging with the [Java Debugger](https://github.com/DonJayamanne/javaVSCode)
