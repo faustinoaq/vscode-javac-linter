@@ -98,7 +98,7 @@ function validateTextDocument(textDocument: FileUri): void {
 			var filepath = decodeURI(convertUriToPath(textDocument.uri));
 			if (os.platform() == 'win32') {
 				cp = classpath.join(";");
-				filepath = filepath.substr(1).replace(/\//g, '\\');
+				filepath = filepath.substr(1).replace(/%3A/, ':').replace(/\//g, '\\');
 			}
 			var cmd = `"${javac}" -Xlint:unchecked -g -d "${classpath[0]}" -cp "${cp}" "${filepath}"`;
 			console.log(cmd);
@@ -107,11 +107,11 @@ function validateTextDocument(textDocument: FileUri): void {
 					console.log(stdout);
 					let firstMsg = stdout.split(':')[1].trim();
 					if (firstMsg == "directory not found") {
-						console.log("Fist classpath doesn't exist");
-						return 0;
+						console.log("First classpath doesn't exist");
+						return 1;
 					} else if (firstMsg == "invalid flag") {
 						console.log("Error when linting with invalid flag");
-						return 1;
+						return 2;
 					}
 					let errors = stdout.split(filepath);
 					var lines = [];
