@@ -52,9 +52,9 @@ Also `.class` files are generated inside of the first classpath.
 
 ## Release Notes
 
-### 1.1.5 (2016-10-25)
+### 1.1.6 (2016-10-26)
 
-- Add `decodeURI` to allow path with spaces and special characters
+- Fix filepath issues
 
 ### 1.1.3 (2016-10-25)
 

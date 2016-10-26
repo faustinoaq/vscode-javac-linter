@@ -98,7 +98,7 @@ function validateTextDocument(textDocument: FileUri): void {
 			var filepath = decodeURI(convertUriToPath(textDocument.uri));
 			if (os.platform() == 'win32') {
 				cp = classpath.join(";");
-				filepath = filepath.substr(1).replace(/%3A/, ':').replace(/\//g, '\\');
+				filepath = filepath.substr(1).replace(/%3A/g, ':').replace(/\//g, '\\');
 			}
 			var cmd = `"${javac}" -Xlint:unchecked -g -d "${classpath[0]}" -cp "${cp}" "${filepath}"`;
 			console.log(cmd);
