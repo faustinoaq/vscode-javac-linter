@@ -32,10 +32,9 @@ By example in `settings.json`:
 {
   "javac-linter.enable": true,
   "javac-linter.maxNumberOfProblems": 100,
-  "javac-linter.javac": "/usr/lib/jvm/default/bin/javac",
+  "javac-linter.javac": "C:/Program Files/Java/jdk1.8.0_112/bin/javac.exe",
   "javac-linter.classpath": [
-    "/home/user/JavaProject/bin/classes",
-    "/home/user/JavaLibs/classes"
+    "${workspaceRoot}/bin/classes"
   ]
 }
 ```
