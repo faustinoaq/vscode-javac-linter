@@ -1,5 +1,6 @@
 # Java Linter
 
+
 ![Logo](https://raw.githubusercontent.com/faustinoaq/vscode-javac-linter/master/client/images/icon.png)
 
 A Java linter for Visual Studio Code using the [the language server protocol](https://code.visualstudio.com/blogs/2016/06/27/common-language-protocol).
