@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 744.09448819 1052.3622047"
+   width="36.124443mm"
+   height="36.124443mm"
+   viewBox="0 0 128 127.99999"
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
@@ -26,16 +26,20 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="168.76617"
-     inkscape:cy="532.66466"
+     inkscape:cx="-18.058855"
+     inkscape:cy="110.14796"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1314"
-     inkscape:window-height="739"
-     inkscape:window-x="52"
+     inkscape:window-width="1366"
+     inkscape:window-height="694"
+     inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -51,19 +55,20 @@
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(-32.271685,-501.84551)">
     <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#da2f30;stroke-width:9.79129791;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#da2f30;stroke-width:4.89564896;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4334"
-       width="246.20869"
-       height="246.20869"
-       x="37.167332"
-       y="378.74115"
+       width="123.10435"
+       height="123.10435"
+       x="34.719509"
+       y="504.29333"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <g
        id="g4307"
-       transform="matrix(0.43649951,0,0,0.43649951,48.528308,390.10192)"
+       transform="matrix(0.21824976,0,0,0.21824976,40.399996,509.97372)"
        style="fill:#da2f30;fill-opacity:1">
       <g
          id="g4251"
