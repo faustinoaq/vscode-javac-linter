@@ -53,6 +53,10 @@ Also `.class` files are generated inside of the first classpath.
 
 ### 1.1.6 (2016-10-26)
 
+- Fix update issues
+
+### 1.1.6 (2016-10-26)
+
 - Fix filepath issues
 
 ### 1.1.3 (2016-10-25)
