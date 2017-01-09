@@ -41,9 +41,9 @@ connection.onInitialize((params): InitializeResult => {
 
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
-documents.onDidOpen((change) => {
-	validateTextDocument(change.document);
-});
+// documents.onDidOpen((change) => {
+// 	validateJavaCode(change.document);
+// });
 
 // The settings interface describe the server relevant settings part
 interface Settings {
@@ -80,14 +80,14 @@ connection.onDidChangeConfiguration((change) => {
 	enable = settings["javac-linter"].enable;
 	javac = settings["javac-linter"].javac || 'javac';
 	// Revalidate any open text documents
-	documents.all().forEach(validateTextDocument);
+	documents.all().forEach(validateJavaCode);
 });
 
-function convertUriToPath(uri: string) : string {
-	return uri.replace("file://", "");
+function convertUriToPath(uri: string): string {
+	return decodeURI(uri.replace("file://", ""));
 }
 
-function validateTextDocument(textDocument: FileUri): void {
+function validateJavaCode(javaCode: FileUri): void {
 	let exec = require('child_process').exec;
 	// First check if javac exist then validate sources
 	exec(`"${javac}" -version`, (err, stderr, stdout) => {
@@ -95,7 +95,7 @@ function validateTextDocument(textDocument: FileUri): void {
 			let diagnostics: Diagnostic[] = [];
 			let os = require('os');
 			var cp = classpath.join(":");
-			var filepath = decodeURI(convertUriToPath(textDocument.uri));
+			var filepath = convertUriToPath(javaCode.uri);
 			if (os.platform() == 'win32') {
 				cp = classpath.join(";");
 				filepath = filepath.substr(1).replace(/%3A/g, ':').replace(/\//g, '\\');
@@ -144,7 +144,7 @@ function validateTextDocument(textDocument: FileUri): void {
 					});
 				}
 				// Send the computed diagnostics to VSCode.
-				connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+				connection.sendDiagnostics({ uri: javaCode.uri, diagnostics });
 			});
 		} else {
 			console.log("javac is not avaliable, check javac-linter on settings.json");
@@ -152,11 +152,18 @@ function validateTextDocument(textDocument: FileUri): void {
 	});
 }
 
-connection.onDidChangeWatchedFiles((change) => {
-	// Monitored files have change in VSCode
-	change.changes.forEach(validateTextDocument)
+// Check Java code when file is opened
+connection.onDidOpenTextDocument(function (change) {
+    validateJavaCode(change.textDocument);
 });
 
+connection.onDidChangeWatchedFiles(function (change) {
+    // Remove duplicates files in changes
+    var changes = change.changes.filter(function(item, pos, self) {
+        return self.indexOf(item) == pos;
+    })
+    changes.forEach(validateJavaCode);
+});
 /*
 
 TODO: completions

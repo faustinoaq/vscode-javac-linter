@@ -2,7 +2,7 @@
 	"name": "javac-linter",
 	"displayName": "Java Linter",
 	"description": "Java Linter for VS Code",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"icon": "images/icon.svg",
 	"publisher": "faustinoaq",
 	"license": "MIT",
@@ -39,10 +39,11 @@
 				"javac-linter.enable": {
 					"type": "boolean",
 					"default": true,
-					"description": "true or false, enable/disable the java-linter"
+					"description": "enable/disable the java-linter"
 				},
 				"javac-linter.javac": {
 					"type": "string",
+					"default": "javac",
 					"description": "Location of Java compiler executable"
 				},
 				"javac-linter.classpath": {
