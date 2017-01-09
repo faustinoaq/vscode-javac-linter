@@ -51,6 +51,10 @@ Also `.class` files are generated inside of the first classpath.
 
 ## Release Notes
 
+### 1.2.2 (2017-01-09)
+
+- Improves for performance and settings
+
 ### 1.1.9 (2016-11-20)
 
 - Fix update issues
