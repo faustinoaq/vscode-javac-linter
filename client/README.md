@@ -51,6 +51,10 @@ Also `.class` files are generated inside of the first classpath.
 
 ## Release Notes
 
+### 1.2.3 (2017-05-01)
+
+- Add limit to `javac` instances to improve performance
+
 ### 1.2.2 (2017-01-09)
 
 - Improves for performance and settings
