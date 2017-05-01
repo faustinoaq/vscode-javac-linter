@@ -160,7 +160,9 @@ connection.onDidOpenTextDocument(function (change) {
 connection.onDidChangeWatchedFiles(function (change) {
     // Remove duplicates files in changes
     var changes = change.changes.filter(function(item, pos, self) {
-        return self.indexOf(item) == pos;
+    		// Max files to analize because many
+				// javac instances slowdown the editor
+        return (self.indexOf(item) == pos) && (pos < 10);
     })
     changes.forEach(validateJavaCode);
 });
