@@ -91,7 +91,7 @@ function validateJavaCode(javaCode: FileUri): void {
 	let exec = require('child_process').exec;
 	// First check if javac exist then validate sources
 	exec(`"${javac}" -version`, (err, stderr, stdout) => {
-		if ((stdout.split(' ')[0] == 'javac') && enable) {
+		if ((stdout.split(' ')[0] == 'javac')) {
 			let diagnostics: Diagnostic[] = [];
 			let os = require('os');
 			var cp = classpath.join(":");
@@ -106,12 +106,10 @@ function validateJavaCode(javaCode: FileUri): void {
 				if (stdout) {
 					console.log(stdout);
 					let firstMsg = stdout.split(':')[1].trim();
-					if (firstMsg == "directory not found") {
-						console.log("First classpath doesn't exist");
-						return 1;
-					} else if (firstMsg == "invalid flag") {
-						console.log("Error when linting with invalid flag");
-						return 2;
+					if (firstMsg == "directory not found" ||
+					    firstMsg == "invalid flag") {
+						console.error(firstMsg);
+						return;
 					}
 					let errors = stdout.split(filepath);
 					var lines = [];
@@ -154,17 +152,21 @@ function validateJavaCode(javaCode: FileUri): void {
 
 // Check Java code when file is opened
 connection.onDidOpenTextDocument(function (change) {
-    validateJavaCode(change.textDocument);
+	if (enable) {
+    	validateJavaCode(change.textDocument);
+	}
 });
 
 connection.onDidChangeWatchedFiles(function (change) {
-    // Remove duplicates files in changes
-    var changes = change.changes.filter(function(item, pos, self) {
-    		// Max files to analize because many
-				// javac instances slowdown the editor
-        return (self.indexOf(item) == pos) && (pos < 10);
-    })
-    changes.forEach(validateJavaCode);
+	if (enable) {
+		// Remove duplicates files in changes
+		var changes = change.changes.filter(function(item, pos, self) {
+			// Max files to analize because many
+			// javac instances slowdown the editor
+			return (self.indexOf(item) == pos) && (pos < 10);
+		})
+		changes.forEach(validateJavaCode);
+	}
 });
 /*
 
