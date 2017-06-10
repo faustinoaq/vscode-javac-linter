@@ -2,7 +2,7 @@
 	"name": "javac-linter",
 	"displayName": "Java Linter",
 	"description": "Java Linter for VS Code",
-	"version": "1.2.3",
+	"version": "1.2.4",
 	"icon": "images/icon.svg",
 	"publisher": "faustinoaq",
 	"license": "MIT",
@@ -17,7 +17,7 @@
 	"galleryBanner": {
 		"color": "#da2f30",
 		"theme": "dark"
-  },
+	},
 	"keywords": [
 		"java",
 		"lint",
@@ -39,19 +39,19 @@
 				"javac-linter.enable": {
 					"type": "boolean",
 					"default": true,
-					"description": "enable/disable the java-linter"
+					"description": "enable/disable the java-linter without restart."
 				},
 				"javac-linter.javac": {
 					"type": "string",
 					"default": "javac",
-					"description": "Location of Java compiler executable"
+					"description": "Location of Java compiler executable."
 				},
 				"javac-linter.classpath": {
 					"type": "array",
 					"items": {
 						"type": "string"
 					},
-					"description": "Location of Java classpath"
+					"description": "Location of Java classpath, first path is used as class destination."
 				},
 				"javac-linter.maxNumberOfProblems": {
 					"type": "number",
