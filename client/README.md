@@ -51,37 +51,7 @@ Also `.class` files are generated inside of the first classpath.
 
 ## Release Notes
 
-### 1.2.3 (2017-05-01)
-
-- Add limit to `javac` instances to improve performance
-
-### 1.2.2 (2017-01-09)
-
-- Improves for performance and settings
-
-### 1.1.9 (2016-11-20)
-
-- Fix update issues
-
-### 1.1.6 (2016-10-26)
-
-- Fix filepath issues
-
-### 1.1.3 (2016-10-25)
-
-- Add `-g` to `javac` args to allow debugging with the [Java Debugger](https://github.com/DonJayamanne/javaVSCode)
-
-### 1.1.1 (2016-10-24)
-
-- Fix error in diff views (stop when inmemory path is found)
-
-### 1.1.0 (2016-10-24)
-
-- Fix many bugs :-) *10 versions in one day*
-
-### 1.0.0 (2016-10-23)
-
-- Initial release of `javac-linter`
+See [CHANGELOG.md](https://raw.githubusercontent.com/faustinoaq/vscode-javac-linter/master/client/CHANGELOG.md)
 
 ## Contributing
 
