@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.2.5] - 2017-07-19
+### Added
+- Limit javac processes executed at same time to 3.
+
 ## [1.2.4] - 2017-06-09
 ### Added
 - Tooltip documentation.

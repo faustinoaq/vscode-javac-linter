@@ -50,6 +50,14 @@ interface Settings {
 	javacLinter: ExtensionSettings;
 }
 
+// Limit the amount of processes executed at same time
+class Javac {
+	static processes = 0;
+	static limit() {
+		return 3;
+	}
+}
+
 // These are the example settings we defined in the client's package.json
 // file
 interface ExtensionSettings {
@@ -88,82 +96,84 @@ function convertUriToPath(uri: string): string {
 }
 
 function validateJavaCode(javaCode: FileUri): void {
-	let exec = require('child_process').exec;
-	// First check if javac exist then validate sources
-	exec(`"${javac}" -version`, (err, stderr, stdout) => {
-		if ((stdout.split(' ')[0] == 'javac')) {
-			let diagnostics: Diagnostic[] = [];
-			let os = require('os');
-			var cp = classpath.join(":");
-			var filepath = convertUriToPath(javaCode.uri);
-			if (os.platform() == 'win32') {
-				cp = classpath.join(";");
-				filepath = filepath.substr(1).replace(/%3A/g, ':').replace(/\//g, '\\');
-			}
-			var cmd = `"${javac}" -Xlint:unchecked -g -d "${classpath[0]}" -cp "${cp}" "${filepath}"`;
-			console.log(cmd);
-			exec(cmd, (err, stderr, stdout) => {
-				if (stdout) {
-					console.log(stdout);
-					let firstMsg = stdout.split(':')[1].trim();
-					if (firstMsg == "directory not found" ||
-					    firstMsg == "invalid flag") {
-						console.error(firstMsg);
-						return;
-					}
-					let errors = stdout.split(filepath);
-					var lines = [];
-					var problemsCount = 0; 
-					errors.forEach((element: String) => {
-						lines.push(element.split('\n'));
-					});
-					lines.every((element) => {
-						if (element.length > 2) {
-							problemsCount++;
-							if (problemsCount > maxNumberOfProblems) {
-								return false;
-							}
-							let firstLine = element[0].split(':');
-							let line = parseInt(firstLine[1]) - 1;
-							let severity = firstLine[2].trim();
-							let column = element[2].length - 1;
-							let message = firstLine[3].trim();
-							diagnostics.push({
-								severity: severity == "error" ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-								range: {
-									start: { line: line, character: column },
-									end: { line: line, character: column }
-								},
-								message: message,
-								source: 'javac'
-							});
-						}
-						return true;
-					});
+	if (Javac.processes < Javac.limit()) {
+		Javac.processes += 1;
+		let exec = require('child_process').exec;
+		// First check if javac exist then validate sources
+		exec(`"${javac}" -version`, (err, stderr, stdout) => {
+			if ((stdout.split(' ')[0] == 'javac')) {
+				let diagnostics: Diagnostic[] = [];
+				let os = require('os');
+				var cp = classpath.join(":");
+				var filepath = convertUriToPath(javaCode.uri);
+				if (os.platform() == 'win32') {
+					cp = classpath.join(";");
+					filepath = filepath.substr(1).replace(/%3A/g, ':').replace(/\//g, '\\');
 				}
-				// Send the computed diagnostics to VSCode.
-				connection.sendDiagnostics({ uri: javaCode.uri, diagnostics });
-			});
-		} else {
-			console.log("javac is not avaliable, check javac-linter on settings.json");
-		}
-	});
+				var cmd = `"${javac}" -Xlint:unchecked -g -d "${classpath[0]}" -cp "${cp}" "${filepath}"`;
+				console.log(cmd);
+				exec(cmd, (err, stderr, stdout) => {
+					if (stdout) {
+						console.log(stdout);
+						let firstMsg = stdout.split(':')[1].trim();
+						if (firstMsg == "directory not found" ||
+							firstMsg == "invalid flag") {
+							console.error(firstMsg);
+							return;
+						}
+						let errors = stdout.split(filepath);
+						var lines = [];
+						var problemsCount = 0;
+						errors.forEach((element: String) => {
+							lines.push(element.split('\n'));
+						});
+						lines.every((element) => {
+							if (element.length > 2) {
+								problemsCount++;
+								if (problemsCount > maxNumberOfProblems) {
+									return false;
+								}
+								let firstLine = element[0].split(':');
+								let line = parseInt(firstLine[1]) - 1;
+								let severity = firstLine[2].trim();
+								let column = element[2].length - 1;
+								let message = firstLine[3].trim();
+								diagnostics.push({
+									severity: severity == "error" ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+									range: {
+										start: { line: line, character: column },
+										end: { line: line, character: column }
+									},
+									message: message,
+									source: 'javac'
+								});
+							}
+							return true;
+						});
+					}
+					// Send the computed diagnostics to VSCode.
+					connection.sendDiagnostics({ uri: javaCode.uri, diagnostics });
+					Javac.processes -= 1;
+				});
+			} else {
+				console.log("javac is not avaliable, check javac-linter on settings.json");
+			}
+		});
+	}
 }
 
 // Check Java code when file is opened
 connection.onDidOpenTextDocument(function (change) {
 	if (enable) {
-    	validateJavaCode(change.textDocument);
+		validateJavaCode(change.textDocument);
 	}
 });
 
 connection.onDidChangeWatchedFiles(function (change) {
 	if (enable) {
 		// Remove duplicates files in changes
-		var changes = change.changes.filter(function(item, pos, self) {
-			// Max files to analize because many
-			// javac instances slowdown the editor
-			return (self.indexOf(item) == pos) && (pos < 10);
+		var changes = change.changes.filter(function (item, pos, self) {
+			return self.indexOf(item) == pos;
 		})
 		changes.forEach(validateJavaCode);
 	}

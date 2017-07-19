@@ -3,7 +3,7 @@
 	"displayName": "Java Linter",
 	"description": "Java Linter for VS Code",
 	"version": "1.2.5",
-	"icon": "images/icon.svg",
+	"icon": "images/icon.png",
 	"publisher": "faustinoaq",
 	"license": "MIT",
 	"repository": {
