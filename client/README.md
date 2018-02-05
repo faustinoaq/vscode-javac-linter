@@ -53,6 +53,24 @@ Also `.class` files are generated inside of the first classpath.
 
 See [CHANGELOG.md](https://raw.githubusercontent.com/faustinoaq/vscode-javac-linter/master/client/CHANGELOG.md)
 
+## Development
+
+> **Note:** [JDK](https://en.wikipedia.org/wiki/Java_Development_Kit) is required.
+
+First, to compile `server.js`:
+
+1. Open `server` directory in terminal.
+2. Install dependencies: `npm install`
+3. Compile and watch files: `npm run compile`
+
+Second, to compile `extension.js`:
+
+1. Open `client` directory in VSCode
+2. Install dependencies: `npm install`
+3. Use `F5` to inspect and debug this extension
+
+> **Note:** Alternatively, you can copy this client folder to your `.vscode/extension` directory
+
 ## Contributing
 
 1. Fork it ( https://github.com/faustinoaq/vscde-javac-linter/fork )
