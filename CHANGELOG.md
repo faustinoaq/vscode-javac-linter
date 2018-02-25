@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.3.0] - 2018-02-25
+### Changes
+- Refactoring and update dependencies.
+
 ## [1.2.6] - 2017-07-19
 ### Added
 - Limit javac processes executed at same time to 3.
