@@ -51,7 +51,7 @@ Also `.class` files are generated inside of the first classpath.
 
 ## Release Notes
 
-See [CHANGELOG.md](https://raw.githubusercontent.com/faustinoaq/vscode-javac-linter/master/client/CHANGELOG.md)
+See [CHANGELOG.md](https://raw.githubusercontent.com/faustinoaq/vscode-javac-linter/master/CHANGELOG.md)
 
 ## Development
 
